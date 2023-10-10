@@ -1,1 +1,51 @@
-test
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webcams</title>
+</head>
+<body>
+    <select id="webcamSelect">
+        <option disabled selected>Select a webcam...</option>
+    </select>
+    <button id="startButton">Start Camera</button>
+    <video id="videoElement" autoplay></video>
+    <script>
+        const videoElement = document.getElementById('videoElement');
+
+        async function populateWebcams() {
+            const webcamSelect = document.getElementById('webcamSelect');
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            devices.forEach(device => {
+                if (device.kind === 'videoinput') {
+                    const option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.text = device.label || `Camera ${webcamSelect.options.length + 1}`;
+                    webcamSelect.appendChild(option);
+                }
+            });
+        }
+
+        async function startCamera() {
+            const selectedDeviceId = document.getElementById('webcamSelect').value;
+            if (!selectedDeviceId) {
+                alert('Please select a webcam first.');
+                return;
+            }
+
+            const constraints = {
+                video: { deviceId: selectedDeviceId },
+            };
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                videoElement.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing webcam:', error);
+            }
+        }
+
+        populateWebcams();
+        document.getElementById('startButton').addEventListener('click', startCamera);
+    </script>
+</body>
+</html>
