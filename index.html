@@ -44,6 +44,17 @@
             }
         }
 
+        // Toggle fullscreen on video click
+        videoElement.addEventListener('click', () => {
+            if (videoElement.requestFullscreen) {
+                videoElement.requestFullscreen();
+            } else if (videoElement.webkitRequestFullscreen) { /* Safari */
+                videoElement.webkitRequestFullscreen();
+            } else if (videoElement.msRequestFullscreen) { /* IE11 */
+                videoElement.msRequestFullscreen();
+            }
+        });
+
         populateWebcams();
         document.getElementById('startButton').addEventListener('click', startCamera);
     </script>
